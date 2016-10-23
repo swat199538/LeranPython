@@ -32,8 +32,7 @@ def print_key(text):
     a = span.get_text()
     b = span2.get_text()
     c = li.get_text()
-    print b
-    sql = "INSERT INTO words ( `word`, `phonetic_symbol`, `mean`) VALUES  ( '%s', '%s', '%s' );" % (a, b, c)
+    sql = 'INSERT INTO words ( `word`, `phonetic_symbol`, `mean`) VALUES  ( "{0}", "{1}", "{2}" );'.format(a, b, c)
     print sql
 
 '''for key in words:
