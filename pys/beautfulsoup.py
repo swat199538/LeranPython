@@ -1,7 +1,9 @@
+# _*_ encoding:utf-8 _*_
 import sys
 import xlrd
 import requests
 from bs4 import BeautifulSoup
+import MySQLdb
 
 
 reload(sys)
@@ -27,19 +29,35 @@ def print_key(text):
 
     # word's Chinese meaning
     div = soup.find('div', class_='trans-container')
-    li = div.find('li')
+    try:
+        li = div.find_all('li')
+        strings = []
+        for keywords in li:
+            abc = keywords.get_text()
+            strings.append(abc)
 
-    a = span.get_text()
-    b = span2.get_text()
-    c = li.get_text()
-    sql = 'INSERT INTO words ( `word`, `phonetic_symbol`, `mean`) VALUES  ( "{0}", "{1}", "{2}" );'.format(a, b, c)
-    print sql
+        a = span.get_text()
+        b = span2.get_text()
+        # c = li.get_text()
 
-'''for key in words:
-    url = 'http://www.youdao.com/w/eng/'
-    html = load_html(url, key)
-    print_key(html.text)
-'''
+        str = ('<br>').join(strings)
+
+        sql = 'INSERT INTO cet_words ( `word`, `phonetic_symbol`, `mean`) VALUES  ( "{0}", "{1}", "{2}" );'.format(a, b, str)
+        print sql
+
+        db = MySQLdb.connect("localhost", "root", "root", "test", charset='utf8')
+        cursor = db.cursor()
+        try:
+            cursor.execute(sql)
+            db.commit()
+            print 'ok'
+        except:
+            db.rollback()
+            print 'no'
+
+        db.close()
+    except:
+        print '{0}失败'.format(span)
 
 
 fname = 'seed.xlsx'
@@ -52,14 +70,19 @@ except:
 
 nrows = sh.nrows
 
-count = range(0, nrows+1)
+count = range(0, nrows)
 
 url = 'http://www.youdao.com/w/eng/'
+
 
 for index in count:
     word = sh.cell_value(index, 0)
     html = load_html(url, word)
     print_key(html.text)
+
+print 'success'
+
+
 
 
 
