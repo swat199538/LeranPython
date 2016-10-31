@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function passLine(line)
+        {
+            function dopass(val)
+            {
+                if (val>=line) {
+                    console.log('pass')
+                } else {
+                    console.log('fail')
+                }
+            }
+            return dopass
+        }
+
+        var aa = passLine(80)
+        aa(80)
+        aa(79)
+    </script>
+</head>
+<body>
+
+</body>
+</html>
